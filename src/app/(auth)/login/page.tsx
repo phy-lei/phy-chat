@@ -59,7 +59,7 @@ const Page: FC = () => {
                 </g>
               </svg>
             )}
-            Google
+            Sign in with GitHub
           </Button>
         </div>
       </div>
