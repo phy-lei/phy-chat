@@ -34,7 +34,7 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, accessToken }) => 
   };
 
   const handlePaste = async (event: any) => {
-   uploadPasteImages(accessToken, event).then((res) => {
+   uploadPasteImages(accessToken, event).then((res: string | null) => {
     console.log('%c [ handlePaste ]', 'font-size:13px; background:pink; color:#bf2c9f;', res);
     if (res) {
      sendMessage(res);

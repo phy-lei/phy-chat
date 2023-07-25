@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const  uploadPasteImages = (accessToken: string, event: any) => {
-  return new Promise<any>((resolve, reject) => {
+  return new Promise<string | null>((resolve, reject) => {
       // 剪贴板没数据，则返回null
     if (!event.clipboardData || !event.clipboardData.items) {
       resolve(null);
