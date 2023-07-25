@@ -5,6 +5,7 @@ import { cn, toPusherKey } from '@/lib/utils';
 import { Message } from '@/lib/validations/message';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import RViewerJS from 'viewerjs-react';
 import { FC, useEffect, useRef, useState } from 'react';
 
 interface MessagesProps {
@@ -14,6 +15,13 @@ interface MessagesProps {
   sessionImg: string | null | undefined;
   chatPartner: User;
 }
+
+const judgeIsImage = (text: string) => {
+  const startStr = 'https://raw.githubusercontent.com/phy-lei/blob-imgs';
+  const reg = /\.(png|jpg|jpeg)$/i;
+
+  return text.startsWith(startStr) && reg.test(text);
+};
 
 const Messages: FC<MessagesProps> = ({
   initialMessages,
@@ -54,7 +62,7 @@ const Messages: FC<MessagesProps> = ({
 
       {messages.map((message, index) => {
         const isCurrentUser = message.senderId === sessionId;
-        const isImage = message.text.startsWith('data:image/png;base64');
+        const isImage = judgeIsImage(message.text);
 
         const hasNextMessageFromSameUser =
           messages[index - 1]?.senderId === messages[index].senderId;
@@ -79,13 +87,9 @@ const Messages: FC<MessagesProps> = ({
                 )}
               >
                 {isImage ? (
-                  <Image
-                    width={500}
-                    height={500}
-                    src={message.text}
-                    alt="Profile picture"
-                    referrerPolicy="no-referrer"
-                  />
+                  <RViewerJS>
+                     <img src={message.text} />
+                  </RViewerJS>
                 ) : (
                   <span
                     className={cn('px-4 py-2 rounded-lg inline-block', {

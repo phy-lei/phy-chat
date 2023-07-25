@@ -2,6 +2,7 @@ import ChatInput from '@/components/ChatInput'
 import Messages from '@/components/Messages'
 import { fetchRedis } from '@/helpers/redis'
 import { authOptions } from '@/lib/auth'
+import { getGithubAccessToken } from '@/lib/access'
 import { messageArrayValidator } from '@/lib/validations/message'
 import { getServerSession } from 'next-auth'
 import Image from 'next/image'
@@ -77,6 +78,7 @@ const page = async ({ params }: PageProps) => {
   )) as string
   const chatPartner = JSON.parse(chatPartnerRaw) as User
   const initialMessages = await getChatMessages(chatId)
+  const accessToken = getGithubAccessToken();
 
   return (
     <div className='flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]'>
@@ -113,7 +115,7 @@ const page = async ({ params }: PageProps) => {
         sessionId={session.user.id}
         initialMessages={initialMessages}
       />
-      <ChatInput chatId={chatId} chatPartner={chatPartner} />
+      <ChatInput chatId={chatId} chatPartner={chatPartner} accessToken={accessToken}/>
     </div>
   )
 }
