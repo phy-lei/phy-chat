@@ -1,7 +1,6 @@
 'use client';
 
 import axios from 'axios';
-// import { uploadPasteImages } from '@/helpers/uploadImg'
 import { FC, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -13,7 +12,11 @@ interface ChatInputProps {
   accessToken: string | null;
 }
 
-const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, accessToken }) => {
+const ChatInput: FC<ChatInputProps> = ({
+  chatPartner,
+  chatId,
+  accessToken,
+}) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
@@ -34,22 +37,24 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, accessToken }) => 
   };
 
   const handlePaste = async (event: any) => {
-  uploadPasteImages(event).then( async (res: string | null) => {
-    if (res) {
-    await axios.post('/api/file/upload', {base64: res}).then((response) => {
-      console.log('%c [ response ]', 'font-size:13px; background:pink; color:#bf2c9f;', response);
+    uploadPasteImages(event).then(async (res: string | null) => {
+      if (res) {
+        await axios
+          .post('/api/file/upload', { base64: res })
+          .then((response) => {
+            sendMessage(response.data);
+          });
+      }
     });
-    }
-   });
   };
 
-  const  uploadPasteImages = (event: any) => {
+  const uploadPasteImages = (event: any) => {
     return new Promise<string | null>((resolve, reject) => {
       if (!event.clipboardData || !event.clipboardData.items) {
         resolve(null);
       }
       const item = event.clipboardData.items[0];
-      console.log('%c [ event ]', 'font-size:13px; background:pink; color:#bf2c9f;', item);
+
       if (item.kind === 'file') {
         const file = item.getAsFile();
         if (item.type.match('^image/')) {
@@ -58,12 +63,11 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, accessToken }) => 
           reader.onload = async function (e: any) {
             const base64 = e.target.result.split('base64,')[1];
             resolve(base64);
-          }
+          };
         }
       }
     });
   };
-
 
   return (
     <div className="border-t border-gray-200 px-4 pt-4 mb-2 sm:mb-0">

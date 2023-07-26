@@ -4,11 +4,11 @@ import { db } from './db'
 import GitHubProvider from "next-auth/providers/github";
 import { fetchRedis } from '@/helpers/redis'
 
-function getGithubCredentials() {
+export function getGithubCredentials() {
   const clientId = process.env.GITHUB_ID
   const clientSecret = process.env.GITHUB_SECRET
   const accessToken = process.env.GITHUB_ACCESS_TOKEN
- 
+
   if (!clientId || clientId.length === 0) {
     throw new Error('Missing Github_CLIENT_ID')
   }
@@ -67,7 +67,6 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name
         session.user.email = token.email
         session.user.image = token.picture
-        session.accessToken = getGithubCredentials().accessToken
       }
 
       return session
