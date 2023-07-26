@@ -15,6 +15,7 @@ export async function generateMetadata({
   params: { chatId: string }
 }) {
   const session = await getServerSession(authOptions)
+  console.log('%c [ session ]', 'font-size:13px; background:pink; color:#bf2c9f;', session);
   if (!session) notFound()
   const [userId1, userId2] = params.chatId.split('--')
   const { user } = session
@@ -61,7 +62,7 @@ const page = async ({ params }: PageProps) => {
   const session = await getServerSession(authOptions)
   if (!session) notFound()
 
-  const { user } = session
+  const { user, accessToken } = session
 
   const [userId1, userId2] = chatId.split('--')
 
@@ -78,7 +79,7 @@ const page = async ({ params }: PageProps) => {
   )) as string
   const chatPartner = JSON.parse(chatPartnerRaw) as User
   const initialMessages = await getChatMessages(chatId)
-  const accessToken = getGithubAccessToken();
+  // const accessToken = getGithubAccessToken();
 
   return (
     <div className='flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]'>

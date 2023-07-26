@@ -1,7 +1,7 @@
 'use client';
 
 import axios from 'axios';
-import { uploadPasteImages } from '@/helpers/uploadImg'
+// import { uploadPasteImages } from '@/helpers/uploadImg'
 import { FC, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import TextareaAutosize from 'react-textarea-autosize';
@@ -10,7 +10,7 @@ import Button from './ui/Button';
 interface ChatInputProps {
   chatPartner: User;
   chatId: string;
-  accessToken: string;
+  accessToken: string | null;
 }
 
 const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, accessToken }) => {
@@ -34,12 +34,34 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId, accessToken }) => 
   };
 
   const handlePaste = async (event: any) => {
-   uploadPasteImages(accessToken, event).then((res: string | null) => {
-    console.log('%c [ handlePaste ]', 'font-size:13px; background:pink; color:#bf2c9f;', res);
+  uploadPasteImages(event).then( async (res: string | null) => {
     if (res) {
-     sendMessage(res);
+    await axios.post('/api/file/upload', {base64: res}).then((response) => {
+      console.log('%c [ response ]', 'font-size:13px; background:pink; color:#bf2c9f;', response);
+    });
     }
    });
+  };
+
+  const  uploadPasteImages = (event: any) => {
+    return new Promise<string | null>((resolve, reject) => {
+      if (!event.clipboardData || !event.clipboardData.items) {
+        resolve(null);
+      }
+      const item = event.clipboardData.items[0];
+      console.log('%c [ event ]', 'font-size:13px; background:pink; color:#bf2c9f;', item);
+      if (item.kind === 'file') {
+        const file = item.getAsFile();
+        if (item.type.match('^image/')) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = async function (e: any) {
+            const base64 = e.target.result.split('base64,')[1];
+            resolve(base64);
+          }
+        }
+      }
+    });
   };
 
 

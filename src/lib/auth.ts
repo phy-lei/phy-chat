@@ -7,7 +7,8 @@ import { fetchRedis } from '@/helpers/redis'
 function getGithubCredentials() {
   const clientId = process.env.GITHUB_ID
   const clientSecret = process.env.GITHUB_SECRET
-
+  const accessToken = process.env.GITHUB_ACCESS_TOKEN
+ 
   if (!clientId || clientId.length === 0) {
     throw new Error('Missing Github_CLIENT_ID')
   }
@@ -16,7 +17,11 @@ function getGithubCredentials() {
     throw new Error('Missing Github_CLIENT_SECRET')
   }
 
-  return { clientId, clientSecret }
+  if (!accessToken || accessToken.length === 0) {
+    throw new Error('Missing Github_CLIENT_SECRET')
+  }
+
+  return { clientId, clientSecret, accessToken }
 }
 
 export const authOptions: NextAuthOptions = {
@@ -62,6 +67,7 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name
         session.user.email = token.email
         session.user.image = token.picture
+        session.accessToken = getGithubCredentials().accessToken
       }
 
       return session
