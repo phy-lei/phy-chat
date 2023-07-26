@@ -5,7 +5,6 @@ import { cn, toPusherKey } from '@/lib/utils';
 import { Message } from '@/lib/validations/message';
 import { format } from 'date-fns';
 import Image from 'next/image';
-import RViewerJS from 'viewerjs-react';
 import { FC, useEffect, useRef, useState } from 'react';
 
 interface MessagesProps {
@@ -107,9 +106,7 @@ const Messages: FC<MessagesProps> = ({
                   ''
                 )}
                 {isImage ? (
-                  <RViewerJS>
-                    <img src={message.text} />
-                  </RViewerJS>
+                  <img src={message.text} />
                 ) : (
                   <span
                     className={cn('px-4 py-2 rounded-lg inline-block', {
