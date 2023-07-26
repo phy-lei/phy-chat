@@ -62,7 +62,7 @@ const page = async ({ params }: PageProps) => {
   const session = await getServerSession(authOptions);
   if (!session) notFound();
 
-  const { user, accessToken } = session;
+  const { user } = session;
 
   const [userId1, userId2] = chatId.split('--');
 
@@ -79,7 +79,6 @@ const page = async ({ params }: PageProps) => {
   )) as string;
   const chatPartner = JSON.parse(chatPartnerRaw) as User;
   const initialMessages = await getChatMessages(chatId);
-  // const accessToken = getGithubAccessToken();
 
   return (
     <div className="flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]">
@@ -116,11 +115,7 @@ const page = async ({ params }: PageProps) => {
         sessionId={session.user.id}
         initialMessages={initialMessages}
       />
-      <ChatInput
-        chatId={chatId}
-        chatPartner={chatPartner}
-        accessToken={accessToken}
-      />
+      <ChatInput chatId={chatId} chatPartner={chatPartner} />
     </div>
   );
 };
