@@ -9,9 +9,14 @@ import Button from './ui/Button';
 interface ChatInputProps {
   chatPartner: User;
   chatId: string;
+  accessToken: string | null;
 }
 
-const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId }) => {
+const ChatInput: FC<ChatInputProps> = ({
+  chatPartner,
+  chatId,
+  accessToken,
+}) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
@@ -32,54 +37,36 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId }) => {
   };
 
   const handlePaste = async (event: any) => {
-    // 剪贴板没数据，则直接返回
-    if (!event.clipboardData || !event.clipboardData.items) {
-      return;
-    }
-    for (let i = 0, len = event.clipboardData.items.length; i < len; i++) {
-      const item = event.clipboardData.items[i];
+    uploadPasteImages(event).then(async (res: string | null) => {
+      if (res) {
+        await axios
+          .post('/api/file/upload', { base64: res })
+          .then((response) => {
+            sendMessage(response.data);
+          });
+      }
+    });
+  };
+
+  const uploadPasteImages = (event: any) => {
+    return new Promise<string | null>((resolve, reject) => {
+      if (!event.clipboardData || !event.clipboardData.items) {
+        resolve(null);
+      }
+      const item = event.clipboardData.items[0];
+
       if (item.kind === 'file') {
         const file = item.getAsFile();
         if (item.type.match('^image/')) {
-          console.log(
-            '%c [ file ]',
-            'font-size:13px; background:pink; color:#bf2c9f;',
-            file
-          );
-
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = async function (e: any) {
-            const base64 = e.target.result;
-
-            console.log(
-              '%c [ xxx ]',
-              'font-size:13px; background:pink; color:#bf2c9f;',
-              base64
-            );
-            const filePath =
-              new Date().toLocaleDateString().replace(/\//g, '') +
-              '/' +
-              file.name;
-            // const res = await axios.put(
-            //   'https://api.github.com/repos/phy-lei/blob-imgs/contents/' +
-            //     filePath,
-            //   {
-            //     message: 'upload img',
-            //     content: base64,
-            //   },
-            //   {
-            //     headers: {
-            //       Authorization: 'token ' + process.env.GITHUB_ACCESS_TOKEN,
-            //     },
-            //   }
-            // );
-            // console.log('[ res ] >', res);
-            sendMessage(base64);
+            const base64 = e.target.result.split('base64,')[1];
+            resolve(base64);
           };
         }
       }
-    }
+    });
   };
 
   return (
