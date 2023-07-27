@@ -70,7 +70,7 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId }) => {
         <TextareaAutosize
           ref={textareaRef}
           onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
+            if (e.keyCode === 13 && !e.shiftKey) {
               e.preventDefault();
               sendMessage(input);
             }
