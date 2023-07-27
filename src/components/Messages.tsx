@@ -108,23 +108,22 @@ const Messages: FC<MessagesProps> = ({
                 {isImage ? (
                   <img src={message.text} />
                 ) : (
-                  <span
-                    className={cn(
-                      'px-4 py-2 rounded-lg inline-block break-all',
-                      {
-                        'bg-indigo-600 text-white': isCurrentUser,
-                        'bg-gray-200 text-gray-900': !isCurrentUser,
-                        'rounded-br-none':
-                          !hasNextMessageFromSameUser && isCurrentUser,
-                        'rounded-bl-none':
-                          !hasNextMessageFromSameUser && !isCurrentUser,
-                      }
-                    )}
+                    <span
+                    className={cn('px-4 py-2 rounded-lg inline-block', {
+                      'bg-indigo-600 text-white': isCurrentUser,
+                      'bg-gray-200 text-gray-900': !isCurrentUser,
+                      'rounded-br-none':
+                        !hasNextMessageFromSameUser && isCurrentUser,
+                      'rounded-bl-none':
+                        !hasNextMessageFromSameUser && !isCurrentUser,
+                    })}
                   >
-                    {message.text}{' '}
-                    <span className="ml-2 text-xs text-gray-400">
-                      {formatTimestamp(message.timestamp)}
-                    </span>
+                    <pre className="whitespace-pre-wrap">
+                      {message.text}{' '}
+                      <span className=" text-xs text-gray-400">
+                        {formatTimestamp(message.timestamp)}
+                      </span>
+                    </pre>
                   </span>
                 )}
               </div>
