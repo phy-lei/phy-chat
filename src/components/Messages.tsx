@@ -118,7 +118,7 @@ const Messages: FC<MessagesProps> = ({
                         !hasNextMessageFromSameUser && !isCurrentUser,
                     })}
                   >
-                    <pre className="whitespace-pre-wrap">
+                    <pre className="whitespace-pre-wrap break-all">
                       {message.text}{' '}
                       <span className=" text-xs text-gray-400">
                         {formatTimestamp(message.timestamp)}
