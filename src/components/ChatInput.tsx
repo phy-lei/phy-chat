@@ -19,7 +19,6 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId }) => {
   const sendMessage = async (value: string) => {
     if (!value) return;
     setIsLoading(true);
-
     try {
       await axios.post('/api/message/send', { text: value, chatId });
       setInput('');
@@ -45,14 +44,15 @@ const ChatInput: FC<ChatInputProps> = ({ chatPartner, chatId }) => {
 
   const uploadPasteImages = (event: any) => {
     return new Promise<string | null>((resolve, reject) => {
-      if (!event.clipboardData || !event.clipboardData.items) {
+      const cvs = event.clipboardData.items;
+      if (!event.clipboardData || !cvs) {
         resolve(null);
       }
-      const item = event.clipboardData.items[0];
-
+      const item = cvs[cvs.length - 1];
       if (item.kind === 'file') {
         const file = item.getAsFile();
         if (item.type.match('^image/')) {
+          setIsLoading(true);
           const reader = new FileReader();
           reader.readAsDataURL(file);
           reader.onload = async function (e: any) {
