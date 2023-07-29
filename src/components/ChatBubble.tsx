@@ -30,7 +30,7 @@ const ChatBubble: FC<ChatBubblesProps> = ({
   const linkText = (text: string) => {
     const newText: { text: string; isLink: boolean }[] = [];
     const reg =
-      /(http:\/\/|https:\/\/|www)((\w|=|\?|\.|\/|&|~|-|[\u200B-\u200D\uFEFF])+)/g;
+      /(https?:\/\/)?(([0-9a-z.]+\.[a-z]+)|(([0-9]{1,3}\.){3}[0-9]{1,3}))(:[0-9]+)?(\/[0-9a-z%/.\-_]*)?(\?[0-9a-z=&%_\-]*)?(\#[0-9a-z=&%_\-]*)?/gi;
     const matchArr = text.match(reg);
     if (!matchArr) {
       newText.push({
