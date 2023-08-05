@@ -31,7 +31,16 @@ const Messages: FC<MessagesProps> = ({
       setMessages((prev) => [message, ...prev]);
     };
 
+    const delMessageHandler = (message: Message) => {
+      setMessages((prev) =>
+        prev.filter((item) => {
+          return item.id !== message.id;
+        })
+      );
+    };
+
     pusherClient.bind('incoming-message', messageHandler);
+    pusherClient.bind('delete-message', delMessageHandler);
 
     return () => {
       pusherClient.unsubscribe(toPusherKey(`chat:${chatId}`));
@@ -67,6 +76,7 @@ const Messages: FC<MessagesProps> = ({
               <ChatBubble
                 isCurrentUser={isCurrentUser}
                 message={message}
+                chatId={chatId}
                 isRoundCorner={hasNextMessageFromSameUser}
               />
               <div

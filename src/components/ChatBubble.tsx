@@ -1,6 +1,8 @@
 'use client';
 
+import axios from 'axios';
 import { FC, useMemo } from 'react';
+import { toast } from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 import { Message } from '@/lib/validations/message';
 import { format } from 'date-fns';
@@ -9,12 +11,14 @@ interface ChatBubblesProps {
   isCurrentUser: boolean;
   message: Message;
   isRoundCorner: boolean;
+  chatId: string;
 }
 
 const ChatBubble: FC<ChatBubblesProps> = ({
   isCurrentUser,
   isRoundCorner,
   message,
+  chatId,
 }) => {
   const formatTimestamp = (timestamp: number) => {
     return format(timestamp, 'HH:mm');
@@ -61,6 +65,38 @@ const ChatBubble: FC<ChatBubblesProps> = ({
     return newText;
   };
 
+  const handleDeleteMessage = async (message: Message) => {
+    if (!message) return;
+    try {
+      const toastId = toast.loading('message is being deleted...');
+      await axios
+        .post('/api/message/delete', { chatId, message })
+        .then((res) => {
+          if (res.status === 200) {
+            if (res.data === 0) {
+              toast.error('no message has been deleted !', {
+                id: toastId,
+                duration: 800,
+              });
+            } else {
+              toast.success('message has been deleted ~', {
+                id: toastId,
+                duration: 800,
+              });
+            }
+          }
+        })
+        .catch(() => {
+          toast.error('Something went wrong. Please try again later.', {
+            id: toastId,
+            duration: 800,
+          });
+        });
+    } catch {
+      toast.error('Something went wrong. Please try again later.');
+    }
+  };
+
   return (
     <div
       className={cn('flex flex-col space-y-2 text-base max-w-xs mx-2', {
@@ -75,6 +111,7 @@ const ChatBubble: FC<ChatBubblesProps> = ({
           width="18"
           height="16"
           viewBox="0 0 40 40"
+          onClick={() => handleDeleteMessage(message)}
         >
           <path
             fill="#888888"
