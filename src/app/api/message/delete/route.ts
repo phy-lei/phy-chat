@@ -5,11 +5,11 @@ import { toPusherKey } from '@/lib/utils'
 
 export async function POST(req: Request) {
   try {
-    const { chatId, message }: { chatId: string; message: Message } = await req.json()
-    const res = await db.zrem(`chat:${chatId}:messages`, JSON.stringify(message))
+    const { chatId, message, index }: { chatId: string; message: Message[]; index: number } = await req.json()
+    const res = await db.zrem(`chat:${chatId}:messages`, ...message)
 
     if (res === 0) return new Response(res.toString());
-    await pusherServer.trigger(toPusherKey(`chat:${chatId}`), 'delete-message', message)
+    await pusherServer.trigger(toPusherKey(`chat:${chatId}`), 'delete-message', { messageNum: message.length, index })
 
     return new Response(res.toString());
   } catch (error) {

@@ -12,6 +12,7 @@ interface ChatBubblesProps {
   message: Message;
   isRoundCorner: boolean;
   chatId: string;
+  index: number;
 }
 
 const ChatBubble: FC<ChatBubblesProps> = ({
@@ -19,6 +20,7 @@ const ChatBubble: FC<ChatBubblesProps> = ({
   isRoundCorner,
   message,
   chatId,
+  index,
 }) => {
   const formatTimestamp = (timestamp: number) => {
     return format(timestamp, 'HH:mm');
@@ -70,7 +72,7 @@ const ChatBubble: FC<ChatBubblesProps> = ({
     try {
       const toastId = toast.loading('message is being deleted...');
       await axios
-        .post('/api/message/delete', { chatId, message })
+        .post('/api/message/delete', { chatId, message: [message], index })
         .then((res) => {
           if (res.status === 200) {
             if (res.data === 0) {
