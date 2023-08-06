@@ -4,8 +4,12 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: ['lh3.googleusercontent.com','avatars.githubusercontent.com']
-  }
-}
+    domains: [
+      'lh3.googleusercontent.com',
+      'avatars.githubusercontent.com',
+      'www.svgrepo.com',
+    ],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast';
 import { cn } from '@/lib/utils';
 import { Message } from '@/lib/validations/message';
 import { format } from 'date-fns';
+import ZoomImage from './ZoomImage';
 
 interface ChatBubblesProps {
   isCurrentUser: boolean;
@@ -128,7 +129,7 @@ const ChatBubble: FC<ChatBubblesProps> = ({
         ''
       )}
       {isImage ? (
-        <img src={message.text} />
+        <ZoomImage src={message.text} alt="picture"></ZoomImage>
       ) : (
         <span
           className={cn('px-4 py-2 rounded-lg inline-block', {
