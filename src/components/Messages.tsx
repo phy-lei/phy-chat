@@ -29,6 +29,8 @@ const Messages: FC<MessagesProps> = ({
 
     const messageHandler = (message: Message) => {
       setMessages((prev) => [message, ...prev]);
+      moveScrollToBottom();
+      
     };
 
     const delMessageHandler = (delData: Record<string, number>) => {
@@ -49,6 +51,12 @@ const Messages: FC<MessagesProps> = ({
       pusherClient.unbind('incoming-message', messageHandler);
     };
   }, [chatId]);
+
+  const moveScrollToBottom = () => {
+    const chatContainer = document.getElementById('messages');
+    if (!chatContainer) return;
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+  };
 
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
 
